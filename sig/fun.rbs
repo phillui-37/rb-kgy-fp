@@ -31,4 +31,16 @@ module Fun
 
   def self.not_nil_map: [T](nil, ^(T) -> untyped) -> nil
                       | [T, R](T, ^(T) -> R) -> R
+
+  def self.add: [T](T, T) -> T
+
+  def self.sub: [T](T, T) -> T
+
+  def self.mul: [T](T, T) -> T
+
+  def self.div: [T](T, T) -> T
+
+  def self.mod: (Numeric, Numeric) -> Numeric
+
+  def self.flip: [T, U, R](U, T, ^(T, U) -> R) -> R
 end

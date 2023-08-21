@@ -47,7 +47,7 @@ class TestFun < Minitest::Test
 
   def test_const
     assert_equal Fun::const(1, nil), 1
-    assert_nil Fun::const(nil, 1), ""
+    assert_nil Fun::const(nil, 1)
   end
 
   def test_pipe
@@ -77,5 +77,53 @@ class TestFun < Minitest::Test
   def test_nil_or_else
     assert_equal Fun::nil_or_else(nil) {1}, 1
     assert_equal Fun::nil_or_else(2) {1}, 2
+  end
+
+  def test_not_nil_or
+    assert_nil Fun::not_nil_or(nil, 1)
+    assert_equal Fun::not_nil_or(2, 1), 1
+  end
+
+  def test_not_nil_or_else
+    assert_nil Fun::not_nil_or_else(nil) {1}
+    assert_equal Fun::not_nil_or_else(2) {1}, 1
+  end
+
+  def test_not_nil_map
+    assert_nil Fun::not_nil_map(nil) {|_|}
+    assert_equal Fun::not_nil_map(1) {|n| n+1}, 2
+  end
+
+  def test_add
+    assert_equal Fun::add(1, 2), 3
+    assert_equal Fun::add("a", "b"), "ab"
+    assert_equal Fun::add([1,2], [3,4]), [1,2,3,4]
+    assert_equal Fun::add(1.2,3.4), 4.6
+  end
+
+  def test_sub
+    assert_equal Fun::sub(1,2), -1
+    assert_equal Fun::sub([1,2], [1]), [2]
+    assert_equal Fun::sub(1.2,3.4), -2.2
+  end
+
+  def test_mul
+    assert_equal Fun::mul("ab", 5), "ababababab"
+    assert_equal Fun::mul(5,4), 20
+    assert_equal Fun::mul(1.1,2), 2.2
+    assert_equal Fun::mul(%w[a b], 2), %w[a b a b]
+  end
+
+  def test_div
+    assert_equal Fun::div(5, 4), 1
+    assert_equal Fun::div(5.0, 4), 1.25
+  end
+
+  def test_mod
+    assert_equal Fun::mod(5,2), 1
+  end
+
+  def test_flip
+    assert_equal Fun::flip("a", "b", &Fun.method(:add)), "ba"
   end
 end

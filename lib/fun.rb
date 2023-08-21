@@ -82,4 +82,28 @@ module Fun
       mapper.(value)
     end
   end
+
+  def self.add(a, b)
+    a + b
+  end
+
+  def self.sub(a, b)
+    a - b
+  end
+
+  def self.mul(a, b)
+    a * b
+  end
+
+  def self.div(a, b)
+    a / b
+  end
+
+  def self.mod(a, b)
+    a % b
+  end
+
+  def self.flip(b, a, &fn)
+    fn.(a, b)
+  end
 end
