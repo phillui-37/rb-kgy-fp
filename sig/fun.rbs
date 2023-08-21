@@ -1,0 +1,34 @@
+module Fun
+  def self.eq?: [T < Comparable, U < Comparable](T, U) -> bool
+
+  def self.ne?: [T < Comparable, U < Comparable](T, U) -> bool
+
+  def self.gt?: [T < Comparable, U < Comparable](T, U) -> bool
+
+  def self.ge?: [T < Comparable, U < Comparable](T, U) -> bool
+
+  def self.lt?: [T < Comparable, U < Comparable](T, U) -> bool
+
+  def self.le?: [T < Comparable, U < Comparable](T, U) -> bool
+
+  def self.id: [T](T) -> T
+
+  def self.const: [T](T, untyped) -> T
+
+  def self.pipe: [T, R](T, *^(untyped) -> untyped) -> R
+
+  def self.compose: [T, R](T, *^(untyped) -> untyped) -> R
+
+  def self.not?: (^(*untyped) -> untyped, *untyped) -> bool
+
+  def self.nil_or: [T](optional[T], T) -> T
+
+  def self.nil_or_else: [T](optional[T], ^-> T) -> T
+
+  def self.not_nil_or: [T](optional[T], T) -> T
+
+  def self.not_nil_or_else: [T](optional[T], ^-> T) -> T
+
+  def self.not_nil_map: [T](nil, ^(T) -> untyped) -> nil
+                      | [T, R](T, ^(T) -> R) -> R
+end

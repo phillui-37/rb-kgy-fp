@@ -1,0 +1,5 @@
+class Array[unchecked out Elem] < Object
+  include Enumerable[Elem]
+  def head: -> (Elem | nil)
+  def tail: -> (Array[Elem] | nil)
+end
