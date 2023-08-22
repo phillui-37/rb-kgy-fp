@@ -34,7 +34,7 @@ module Fun
 
   def self.add: [T](T, T) -> T
 
-  def self.sub: [T](T, T) -> T
+  def self.minus: [T](T, T) -> T
 
   def self.mul: [T](T, T) -> T
 
@@ -43,4 +43,12 @@ module Fun
   def self.mod: (Numeric, Numeric) -> Numeric
 
   def self.flip: [T, U, R](U, T, ^(T, U) -> R) -> R
+
+  def self.all?: [T](T, *^(T) -> bool) -> bool
+
+  def self.any?: [T](T, *^(T) -> bool) -> bool
+
+  def self.clamp: [T < Comparable](T, T, T) -> T
+
+  def self.cond: [T, R](Array[{cond: ^(T) -> bool, mapper: ^(T) -> R}], *T, **Hash[Symbol, T]) -> R
 end

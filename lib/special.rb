@@ -1,11 +1,15 @@
 require 'singleton'
 
-class PlaceHolder
-  include Singleton
+module Special
+  class PlaceHolder
+    include Singleton
+  end
+
+  PH = PlaceHolder.instance
+
+  class Optional
+    include Singleton
+  end
+
+  OPT = PlaceHolder.instance
 end
-
-__ = PlaceHolder.instance
-
-# todo normal arg => :req, optional arg => :opt
-# *arg => :rest, c: => :keyreq, d: '...' => :key
-# **kargs => :keyrest

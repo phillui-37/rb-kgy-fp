@@ -101,10 +101,10 @@ class TestFun < Minitest::Test
     assert_equal Fun::add(1.2,3.4), 4.6
   end
 
-  def test_sub
-    assert_equal Fun::sub(1,2), -1
-    assert_equal Fun::sub([1,2], [1]), [2]
-    assert_equal Fun::sub(1.2,3.4), -2.2
+  def test_minus
+    assert_equal Fun::minus(1,2), -1
+    assert_equal Fun::minus([1,2], [1]), [2]
+    assert_equal Fun::minus(1.2,3.4), -2.2
   end
 
   def test_mul
@@ -125,5 +125,17 @@ class TestFun < Minitest::Test
 
   def test_flip
     assert_equal Fun::flip("a", "b", &Fun.method(:add)), "ba"
+  end
+
+  def test_all?
+
+  end
+
+  def test_any?
+
+  end
+
+  def test_cond
+
   end
 end
