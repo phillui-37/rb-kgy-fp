@@ -138,4 +138,20 @@ class TestFun < Minitest::Test
   def test_cond
 
   end
+
+  def test_curry
+    raw_fn = ->(a,b=2,*c,d:,e:3,**f,&g) {
+      _c = c[0] ? c[0] : 3
+      g.(a+b+_c-d-e-f.values.reduce(:+))
+    }
+    expected = (1+6+3-4-3-6) / 10.0
+    f = Fun::curry(&raw_fn)
+    result = f.(1,6,3,d:4,f:6) do |n|
+      n / 10.0
+    end
+    assert_equal result, expected
+
+    f2 = f.(6,1,k:6)
+    assert_equal f2.(d:4) {|n| n / 10.0}, expected
+  end
 end

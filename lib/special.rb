@@ -11,5 +11,5 @@ module Special
     include Singleton
   end
 
-  OPT = PlaceHolder.instance
+  OPT = Optional.instance
 end

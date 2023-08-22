@@ -133,22 +133,82 @@ module Fun
     nil
   end
 
-  # todo normal arg => :req, optional arg => :opt
-  # *arg => :rest, c: => :keyreq, d: '...' => :key
-  # **kargs => :keyrest
-  # Not supporting yield
   def self.curry(&fn)
     require "special"
-    using Special
-    module ParamFlag
-      REQ = 1 << 0
-      OPT = 1 << 1
-      REST = 1 << 2
-      KREQ = 1 << 3
-      KOPT = 1 << 4
-      KREST = 1 << 5
-      BLOCK = 1 << 6
+
+    req = 1 << 0
+    opt = 1 << 1
+    rest = 1 << 2
+    kreq = 1 << 3
+    kopt = 1 << 4
+    krest = 1 << 5
+    block = 1 << 6
+
+    core = ->(this, fn, c_params=[], c_remain_param_count=0) do
+      ->(*args, **kwargs, &proc) do
+        cp_c_params = Marshal.load(Marshal.dump(c_params))
+        cp_c_remain_param_count = c_remain_param_count
+        arg_idx = 0
+        _kwargs = {**kwargs}
+
+        (0...cp_c_params.length).each { |i|
+          param = cp_c_params[i]
+          filled = param[:value] != Special::PH && param[:value] != Special::OPT
+
+          if (param[:type] & (req | opt)) != 0 && !filled
+            param[:value] = args[arg_idx]
+            arg_idx += 1
+            cp_c_remain_param_count -= 1 if param[:type] == req
+          end
+
+          if (param[:type] & (kreq | kopt) != 0) && !filled && _kwargs[param[:name]] != nil
+            param[:value] = _kwargs.delete(param[:name])
+            cp_c_remain_param_count -= 1 if param[:type] == kreq
+          end
+
+          if param[:type] == block && !filled && proc
+            param[:value] = proc
+            cp_c_remain_param_count -= 1
+          end
+        }
+
+        if args.length >= arg_idx + 1 && cp_c_params.any? { |p| p[:type] == rest }
+          cp_c_params.find { |p| p[:type] == rest }[:value] = args[arg_idx, args.length]
+        end
+
+        if _kwargs.length > 0 && cp_c_params.any? {|p| p[:type] == krest}
+          cp_c_params.find { |p| p[:type] == krest }[:value] = _kwargs
+        end
+
+        if cp_c_remain_param_count == 0
+          _params = []
+          _kparams = {}
+          _proc = nil
+          cp_c_params.each do |param|
+            case param[:type]
+            when req, opt
+              _params << param[:value] if param[:value] != Special::OPT && param[:value] != Special::PH
+            when kreq, kopt
+              _kparams[param[:name]] = param[:value] if param[:value] != Special::OPT && param[:value] != Special::PH
+            when rest
+              _params.push(*param[:value])
+            when krest
+              _kparams.update(param[:value])
+            when proc
+              _proc = param[:value]
+            end
+          end
+          if _proc
+            fn.(*_params, **_kparams, &_proc)
+          else
+            fn.(*_params, **_kparams)
+          end
+        else
+          this.(this, fn, cp_c_params, cp_c_remain_param_count)
+        end
+      end
     end
+
     params = []
     remain_param_count = 0
 
@@ -157,86 +217,25 @@ module Fun
       detail => [type, name]
       case type
       when :req
-        params << { name: name, value: PH, type: ParamFlag::REQ }
+        params << { name: name, value: Special::PH, type: req }
         remain_param_count += 1
       when :opt
-        params << { name: name, value: OPT, type: ParamFlag::OPT }
+        params << { name: name, value: Special::OPT, type: opt }
       when :rest
-        params << { name: name, type: ParamFlag::REST }
+        params << { name: name, type: rest }
       when :keyreq
-        params << { name: name, value: PH, type: ParamFlag::KREQ }
+        params << { name: name, value: Special::PH, type: kreq }
         remain_param_count += 1
       when :key
-        params << { name: name, value: OPT, type: ParamFlag::KOPT }
+        params << { name: name, value: Special::OPT, type: kopt }
       when :keyrest
-        params << { name: name, type: ParamFlag::KREST }
+        params << { name: name, type: krest }
       when :block
-        params << { name: name, value: PH, type: ParamFlag::BLOCK }
+        params << { name: name, value: Special::PH, type: block }
         remain_param_count += 1
       end
     end
 
-    ->(*args, **kwargs, &proc) do
-      using ParamFlag
-      arg_idx = 0
-      _kwargs = {**kwargs}
-
-      (0..params.length).each { |i|
-        param = params[i]
-        filled = param.value != PH && param.value != OPT
-
-        if (param.type & (REQ | OPT)) != 0 && !filled
-          param.value = args[arg_idx]
-          arg_idx += 1
-          remain_param_count -= 1 if param.type == REQ
-        end
-
-        if (param.type & (KREQ | KOPT) != 0) && !filled && _kwargs[param.name] != nil
-          param.value = _kwargs.delete(param.name)
-          remain_param_count -= 1 if param.type == KREQ
-        end
-
-        if param.type == BLOCK && !filled && proc
-          param.value = proc
-          remain_param_count -= 1
-        end
-      }
-
-      if args.length - 1 > arg_idx && params.any? { |p| p.type == REST }
-        params.find { |p| p.type == REST }.value = args[arg_idx, -1]
-      end
-
-      if _kwargs.length > 0 && params.any? {|p| p.type == KREST}
-        params.find { |p| p.type == KREST }.value = _kwargs
-      end
-
-      if remain_param_count == 0
-        _params = []
-        _kparams = {}
-        _proc = nil
-        params.each do |param|
-          case param.type
-          when REQ, OPT
-            _params << param.value
-          when KREQ, KOPT
-            _kparams[param.name] = param.value
-          when REST
-            _params.concat(*param.value)
-          when KREST
-            _kparams.merge(param.value)
-          when PROC
-            _proc = param.value
-          end
-        end
-        if _proc
-          fn.(*_params, **_kparams, &_proc)
-        else
-          fn.(*_params, **_kparams)
-        end
-      else
-        # TODO
-      end
-    end
-
+    core.(core, fn, params, remain_param_count)
   end
 end

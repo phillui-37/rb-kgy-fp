@@ -51,4 +51,6 @@ module Fun
   def self.clamp: [T < Comparable](T, T, T) -> T
 
   def self.cond: [T, R](Array[{cond: ^(T) -> bool, mapper: ^(T) -> R}], *T, **Hash[Symbol, T]) -> R
+
+  def self.curry: [R](^(*untyped, **Hash[Symbol, untyped]) -> R) -> ^(*untyped, **Hash[Symbol, untyped]) -> (R | Proc)
 end
