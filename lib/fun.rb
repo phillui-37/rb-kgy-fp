@@ -8,19 +8,35 @@ module Fun
   end
 
   def self.gt?(a, b)
-    a > b
+    if a.respond_to?(:>)
+      a > b
+    else
+      (a <=> b) == 1
+    end
   end
 
   def self.ge?(a, b)
-    a >= b
+    if a.respond_to?(:>=)
+      a >= b
+    else
+      (a <=> b) >= 0
+    end
   end
 
   def self.lt?(a, b)
-    a < b
+    if a.respond_to?(:<)
+      a < b
+    else
+      (a <=> b) == -1
+    end
   end
 
   def self.le?(a, b)
-    a <= b
+    if a.respond_to?(:<=)
+      a <= b
+    else
+      (a <=> b) <= 0
+    end
   end
 
   def self.id t
@@ -126,8 +142,9 @@ module Fun
   end
 
   def self.cond(cond_mappers, *args, **kwargs)
+    return nil if args.length == 0 && kwargs.size == 0
     cond_mappers.each { |fns|
-      fns => { cond:, mapper: }
+      fns => [cond, mapper]
       return mapper.(*args, **kwargs) if cond.(*args, **kwargs)
     }
     nil
@@ -144,12 +161,12 @@ module Fun
     krest = 1 << 5
     block = 1 << 6
 
-    core = ->(this, fn, c_params=[], c_remain_param_count=0) do
+    core = ->(this, fn, c_params = [], c_remain_param_count = 0) do
       ->(*args, **kwargs, &proc) do
-        cp_c_params = Marshal.load(Marshal.dump(c_params))
+        cp_c_params = Marshal.load(Marshal.dump(c_params)) # use serialization to ensure whole operation is pure
         cp_c_remain_param_count = c_remain_param_count
         arg_idx = 0
-        _kwargs = {**kwargs}
+        _kwargs = { **kwargs }
 
         (0...cp_c_params.length).each { |i|
           param = cp_c_params[i]
@@ -176,7 +193,7 @@ module Fun
           cp_c_params.find { |p| p[:type] == rest }[:value] = args[arg_idx, args.length]
         end
 
-        if _kwargs.length > 0 && cp_c_params.any? {|p| p[:type] == krest}
+        if _kwargs.length > 0 && cp_c_params.any? { |p| p[:type] == krest }
           cp_c_params.find { |p| p[:type] == krest }[:value] = _kwargs
         end
 
@@ -237,5 +254,113 @@ module Fun
     end
 
     core.(core, fn, params, remain_param_count)
+  end
+
+  def self.dec n
+    n - 1
+  end
+
+  def self.inc n
+    n + 1
+  end
+
+  def self.desc(values, &comparator)
+    if values.class == Hash
+      Hash[values.sort_by { |k, v| comparator.(k, v) }.reverse]
+    elsif values.class == Array
+      values.sort_by { |v| comparator.(v) }.reverse
+    end
+  end
+
+  def self.asc(values, &comparator)
+    if values.class == Hash
+      Hash[values.sort_by { |k, v| comparator.(k, v) }]
+    elsif values.class == Array
+      values.sort_by { |v| comparator.(v) }
+    end
+  end
+
+  def self.to_sym s
+    s.to_sym
+  end
+
+  def self.diff(obj1, obj2)
+    get_diff = ->(arr1, arr2) {
+      arr1.size > arr2.size ? arr1 - arr2 : arr2 - arr1
+    }
+    if obj1.class != obj2.class
+      throw ArgumentError "obj1 is not same type with obj2"
+    elsif obj1.class == Hash
+      diff = get_diff.(obj1.to_a, obj2.to_a)
+      Hash[*diff.flatten]
+    else
+      get_diff.(obj1, obj2)
+    end
+  end
+
+  def self.intersect(obj1, obj2)
+    get_inte = ->(arr1, arr2) {
+      arr1.size > arr2.size ? arr1 - (arr1 - arr2) : arr2 - (arr2 - arr1)
+    }
+    if obj1.class != obj2.class
+      throw ArgumentError "obj1 is not same type with obj2"
+    elsif obj1.class == Hash
+      inte = get_inte.(obj1.to_a, obj2.to_a)
+      Hash[*inte.flatten]
+    else
+      get_inte.(obj1, obj2)
+    end
+  end
+
+  def self.non_intersect(obj1, obj2)
+    if obj1.class != obj2.class
+      throw ArgumentError "obj1 is not same type with obj2"
+    elsif obj1.class == Hash
+      left = obj1.to_a - obj2.to_a
+      right = obj2.to_a - obj1.to_a
+      Hash[*left.flatten, *right.flatten]
+    else
+      left = obj1 - obj2
+      right = obj2 - obj1
+      (left + right).uniq
+    end
+  end
+
+  def self.union(obj1, obj2)
+    # TODO
+  end
+
+  def self.empty obj
+    case obj.class.to_s
+    when 'Hash'
+      {}
+    when 'Array'
+      []
+    when 'String'
+      ''
+    else
+      nil
+    end
+  end
+
+  def self.mean *ns
+    ns.reduce(:+) / ns.length
+  end
+
+  def self.median *ns
+    ns.sort[(ns.length / 2).floor]
+  end
+
+  def self.memorize_with(get_key, &action)
+    cache = {}
+    ->(*args, **kwargs) do
+      key = get_key.(*args, **kwargs).to_sym
+      cache[key] = action.(*args, **kwargs) unless cache[key]
+      cache[key]
+    end
+  end
+
+  def self.negate n
+    -n
   end
 end

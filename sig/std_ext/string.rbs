@@ -1,0 +1,8 @@
+class String
+  include Comparable
+  def head: -> String?
+
+  def tail: -> String
+
+  def init: -> String
+end

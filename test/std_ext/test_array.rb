@@ -7,10 +7,18 @@ class StdExtListTest < Minitest::Test
   end
 
   def test_head
-    assert_equal @ls.head, 1
+    assert_equal 1, @ls.head
   end
 
   def test_tail
-    assert_equal @ls.tail, [2,3,4,5]
+    assert_equal [2,3,4,5], @ls.tail
+  end
+
+  def test_init
+    assert_equal [1,2,3,4], @ls.init
+  end
+
+  def test_xprod
+    #todo
   end
 end

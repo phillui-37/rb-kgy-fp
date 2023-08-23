@@ -1,5 +1,10 @@
-class Array[unchecked out Elem] < Object
+class Array[unchecked out Elem]
   include Enumerable[Elem]
-  def head: -> (Elem | nil)
-  def tail: -> (Array[Elem] | nil)
+  def head: -> Elem?
+
+  def tail: -> Array[Elem]
+
+  def init: -> Array[Elem]
+
+  def xprod: (Array[Elem]) -> Array[[Elem, Elem]]
 end

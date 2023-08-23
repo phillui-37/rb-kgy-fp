@@ -30,7 +30,7 @@ module Fun
   def self.not_nil_or_else: [T](optional[T], ^-> T) -> T
 
   def self.not_nil_map: [T](nil, ^(T) -> untyped) -> nil
-                      | [T, R](T, ^(T) -> R) -> R
+    | [T, R](T, ^(T) -> R) -> R
 
   def self.add: [T](T, T) -> T
 
@@ -50,7 +50,44 @@ module Fun
 
   def self.clamp: [T < Comparable](T, T, T) -> T
 
-  def self.cond: [T, R](Array[{cond: ^(T) -> bool, mapper: ^(T) -> R}], *T, **Hash[Symbol, T]) -> R
+  def self.cond: [T, R](Array[[^(T) -> bool, ^(T) -> R]], *T, **T) -> R
 
-  def self.curry: [R](^(*untyped, **Hash[Symbol, untyped]) -> R) -> ^(*untyped, **Hash[Symbol, untyped]) -> (R | Proc)
+  def self.curry: [R](^(*untyped, **Hash[Symbol, untyped]) -> R) -> ^(*untyped, **untyped) -> (R | Proc)
+
+  def self.dec: (Numeric) -> Numeric
+
+  def self.inc: (Numeric) -> Numeric
+
+  def self.desc: [T < Comparable](Array[T], ^(T) -> Comparable) -> Array[T]
+    | [T < Comparable](Hash[Symbol, T], ^(Symbol, T) -> Comparable) -> Hash[Symbol, T]
+
+  def self.asc: [T < Comparable](Array[T], ^(T) -> Comparable) -> Array[T]
+    | [T < Comparable](Hash[Symbol, T], ^(Symbol, T) -> Comparable) -> Hash[Symbol, T]
+
+  def self.to_sym: (String) -> Symbol
+
+  def self.diff: [T](Array[T], Array[T]) -> Array[T]
+    | [T](Hash[Symbol, T], Hash[Symbol, T]) -> Hash[Symbol, T]
+
+  def self.intersect: [T](Array[T], Array[T]) -> Array[T]
+    | [T](Hash[Symbol, T], Hash[Symbol, T]) -> Hash[Symbol, T]
+
+  def self.non_intersect: [T](Array[T], Array[T]) -> Array[T]
+    | [T](Hash[Symbol, T], Hash[Symbol, T]) -> Hash[Symbol, T]
+
+  def self.union: [T](Array[T], Array[T]) -> Array[T]
+    | [T](Hash[Symbol, T], Hash[Symbol, T]) -> Hash[Symbol, T]
+
+  def self.empty: (Array[untyped]) -> Array[untyped]
+    | (Hash[Symbol, untyped]) -> Hash[Symbol, untyped]
+    | (String) -> String
+    | (untyped) -> nil
+
+  def self.mean: (*Numeric) -> Numeric
+
+  def self.median: (*Numeric) -> Numeric
+
+  def self.memorize_with: [R](^(*untyped, **untyped) -> String, ^(*untyped, **untyped) -> R) -> R
+
+  def self.negate: (Numeric) -> Numeric
 end
