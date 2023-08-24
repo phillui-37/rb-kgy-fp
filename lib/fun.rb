@@ -123,12 +123,20 @@ module Fun
     fn.(a, b)
   end
 
-  def self.all?(items, *fns)
-    fns.reduce(true) { |result, fn| result && fn.(items) }
+  def self.all?(fst, *snd)
+    if fst.class == Proc
+      snd.all?(&fst)
+    else
+      snd.reduce(true) { |result, fn| result && fn.(fst) }
+    end
   end
 
-  def self.any?(items, *fns)
-    fns.reduce(false) { |result, fn| result || fn.(items) }
+  def self.any?(fst, *snd)
+    if fst.class == Proc
+      snd.all?(&fst)
+    else
+      snd.reduce(false) { |result, fn| result || fn.(fst) }
+    end
   end
 
   def self.clamp(lower, upper, value)
@@ -327,7 +335,13 @@ module Fun
   end
 
   def self.union(obj1, obj2)
-    # TODO
+    if obj1.class != obj2.class
+      throw ArgumentError "obj1 is not same type with obj2"
+    elsif obj1.class == Hash
+      obj1.merge(obj2)
+    else
+      (obj1 + obj2).uniq
+    end
   end
 
   def self.empty obj
@@ -343,11 +357,11 @@ module Fun
     end
   end
 
-  def self.mean *ns
+  def self.mean * ns
     ns.reduce(:+) / ns.length
   end
 
-  def self.median *ns
+  def self.median * ns
     ns.sort[(ns.length / 2).floor]
   end
 

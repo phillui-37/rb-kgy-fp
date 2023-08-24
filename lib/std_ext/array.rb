@@ -4,11 +4,11 @@ class Array
   end
 
   def tail
-    last(length - 1)
+    length <= 1 ? [] : last(length - 1)
   end
 
   def init
-    first(length - 1)
+    length == 0 ? [] : first(length - 1)
   end
 
   def xprod arr2

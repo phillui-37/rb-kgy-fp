@@ -5,4 +5,6 @@ class String
   def tail: -> String
 
   def init: -> String
+
+  def last: -> String?
 end

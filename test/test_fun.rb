@@ -90,36 +90,36 @@ class TestFun < Minitest::Test
   end
 
   def test_id
-    assert_equal Fun::id(1), 1
+    assert_equal 1, Fun::id(1)
     assert Fun::id(->() {}) != ->() {} # check by ref, lambda should not be equal
 
     def f; end
 
-    assert_equal Fun::id(:f), :f
+    assert_equal :f, Fun::id(:f)
 
     f2 = ->() {}
-    assert_equal Fun::id(f2), f2
+    assert_equal f2, Fun::id(f2)
   end
 
   def test_const
-    assert_equal Fun::const(1, nil), 1
+    assert_equal 1, Fun::const(1, nil)
     assert_nil Fun::const(nil, 1)
   end
 
   def test_pipe
-    assert_equal Fun::pipe(
+    assert_equal "1", Fun::pipe(
       nil,
       ->(_) { Fun::const(1, _) },
       ->(n) { n.to_s },
-    ), "1"
+    )
   end
 
   def test_compose
-    assert_equal Fun::compose(
+    assert_equal "wow123", Fun::compose(
       "wow",
       ->(s) { s + "123" },
       ->(n) { n.to_s },
-    ), "wow123"
+    )
   end
 
   def test_not?
@@ -127,77 +127,79 @@ class TestFun < Minitest::Test
   end
 
   def test_nil_or
-    assert_equal Fun::nil_or(nil, 1), 1
+    assert_equal 1, Fun::nil_or(nil, 1)
     assert_nil Fun::nil_or(nil, nil)
-    assert_equal Fun::nil_or(1, nil), 1
+    assert_equal 1, Fun::nil_or(1, nil)
   end
 
   def test_nil_or_else
-    assert_equal Fun::nil_or_else(nil) { 1 }, 1
-    assert_equal Fun::nil_or_else(2) { 1 }, 2
+    assert_equal 1, Fun::nil_or_else(nil) { 1 }
+    assert_equal 2, Fun::nil_or_else(2) { 1 }
   end
 
   def test_not_nil_or
     assert_nil Fun::not_nil_or(nil, 1)
-    assert_equal Fun::not_nil_or(2, 1), 1
+    assert_equal 1, Fun::not_nil_or(2, 1)
   end
 
   def test_not_nil_or_else
     assert_nil Fun::not_nil_or_else(nil) { 1 }
-    assert_equal Fun::not_nil_or_else(2) { 1 }, 1
+    assert_equal 1, Fun::not_nil_or_else(2) { 1 }
   end
 
   def test_not_nil_map
     assert_nil Fun::not_nil_map(nil) { |_| }
-    assert_equal Fun::not_nil_map(1) { |n| n + 1 }, 2
+    assert_equal 2, Fun::not_nil_map(1) { |n| n + 1 }
   end
 
   def test_add
-    assert_equal Fun::add(1, 2), 3
-    assert_equal Fun::add("a", "b"), "ab"
-    assert_equal Fun::add([1, 2], [3, 4]), [1, 2, 3, 4]
-    assert_equal Fun::add(1.2, 3.4), 4.6
+    assert_equal 3, Fun::add(1, 2)
+    assert_equal "ab", Fun::add("a", "b")
+    assert_equal Array(1..4), Fun::add([1, 2], [3, 4])
+    assert_equal 4.6, Fun::add(1.2, 3.4)
   end
 
   def test_minus
-    assert_equal Fun::minus(1, 2), -1
-    assert_equal Fun::minus([1, 2], [1]), [2]
-    assert_equal Fun::minus(1.2, 3.4), -2.2
+    assert_equal(-1, Fun::minus(1, 2))
+    assert_equal [2], Fun::minus([1, 2], [1])
+    assert_equal(-2.2, Fun::minus(1.2, 3.4))
   end
 
   def test_mul
-    assert_equal Fun::mul("ab", 5), "ababababab"
-    assert_equal Fun::mul(5, 4), 20
-    assert_equal Fun::mul(1.1, 2), 2.2
-    assert_equal Fun::mul(%w[a b], 2), %w[a b a b]
+    assert_equal "ababababab", Fun::mul("ab", 5)
+    assert_equal 20, Fun::mul(5, 4)
+    assert_equal 2.2, Fun::mul(1.1, 2)
+    assert_equal %w[a b a b], Fun::mul(%w[a b], 2)
   end
 
   def test_div
-    assert_equal Fun::div(5, 4), 1
-    assert_equal Fun::div(5.0, 4), 1.25
+    assert_equal 1, Fun::div(5, 4)
+    assert_equal 1.25, Fun::div(5.0, 4)
   end
 
   def test_mod
-    assert_equal Fun::mod(5, 2), 1
-    assert_equal Fun::mod(5.0, 1.5), 5.0 % 1.5
+    assert_equal 1, Fun::mod(5, 2)
+    assert_equal 5.0 % 1.5, Fun::mod(5.0, 1.5)
   end
 
   def test_flip
-    assert_equal Fun::flip("a", "b", &Fun.method(:add)), "ba"
+    assert_equal "ba", Fun::flip("a", "b", &Fun.method(:add))
   end
 
   def test_all?
     assert Fun::all?(2, ->(n) { n > 1 }, ->(n) { n.even? })
+    assert Fun::all?(->(n) { n.even? }, 0, 2, 4)
   end
 
   def test_any?
     assert Fun::any?(2, ->(n) { n > 1 }, ->(n) { n < 1 })
+    assert Fun::any?(->(n) { n.even? }, 2, 4, 6)
   end
 
   def test_clamp
-    assert_equal Fun::clamp(1, 10, 100), 10
-    assert_equal Fun::clamp(1, 10, -1), 1
-    assert_equal Fun::clamp(1, 10, 2), 2
+    assert_equal 10, Fun::clamp(1, 10, 100)
+    assert_equal 1, Fun::clamp(1, 10, -1)
+    assert_equal 2, Fun::clamp(1, 10, 2)
   end
 
   def test_cond
@@ -206,8 +208,8 @@ class TestFun < Minitest::Test
       [->(n) { n & 1 }, ->(n) { n / 2.0 }]
     ]
     assert_nil Fun::cond(cond_mapper)
-    assert_equal Fun::cond(cond_mapper, 1, tag: "test"), 2
-    assert_equal Fun::cond(cond_mapper, 3), 1.5
+    assert_equal 2, Fun::cond(cond_mapper, 1, tag: "test")
+    assert_equal 1.5, Fun::cond(cond_mapper, 3)
   end
 
   def test_curry
@@ -221,21 +223,21 @@ class TestFun < Minitest::Test
     result = f.(1, 6, 3, d: 4, f: 6) do |n|
       n / 10.0
     end
-    assert_equal result, expected
+    assert_equal expected, result
 
     f2 = f.(6, 1, k: 6)
-    assert_equal f2.(d: 4) { |n| n / 10.0 }, expected
+    assert_equal expected, f2.(d: 4) { |n| n / 10.0 }
 
     # no argument
     f3 = Fun::curry(&->() { "Hello World" })
-    assert_equal f3.(), "Hello World"
+    assert_equal "Hello World", f3.()
 
     # no proc
     f4 = Fun::curry(&->(a, b = 2, *c, d:, e: 5, **f) {
       _c = c[0] || 3
       a + b + _c + d + e + f.values.reduce(:+)
     })
-    assert_equal f4.(1, 100, 3, 10, d: 4, k: 6, j: 7), 1 + 100 + 3 + 4 + 5 + 6 + 7
+    assert_equal 1 + 100 + 3 + 4 + 5 + 6 + 7, f4.(1, 100, 3, 10, d: 4, k: 6, j: 7)
   end
 
   def test_dec
@@ -258,9 +260,9 @@ class TestFun < Minitest::Test
     assert_equal sorted_h1_keys2, %w[a test c].map { |s| s.to_sym }
     assert_equal h1.keys, %w[test a c].map { |s| s.to_sym } # ensure method is pure
 
-    arr1 = [1, 2, 3, 4]
-    assert_equal Fun::desc(arr1, &Fun.method(:id)), [4, 3, 2, 1]
-    assert_equal arr1, [1, 2, 3, 4] # ensure method is pure
+    arr1 = Array(1..4)
+    assert_equal arr1.reverse, Fun::desc(arr1, &Fun.method(:id))
+    assert_equal Array(1..4), arr1
   end
 
   def test_asc
@@ -273,9 +275,9 @@ class TestFun < Minitest::Test
     assert_equal sorted_h1_keys2, %w[c test a].map { |s| s.to_sym }
     assert_equal h1.keys, %w[test a c].map { |s| s.to_sym } # ensure method is pure
 
-    arr1 = [4, 3, 2, 1]
-    assert_equal Fun::asc(arr1, &Fun.method(:id)), [1, 2, 3, 4]
-    assert_equal arr1, [4, 3, 2, 1] # ensure method is pure
+    arr1 = Array(4..1)
+    assert_equal arr1.reverse, Fun::asc(arr1, &Fun.method(:id))
+    assert_equal Array(4..1), arr1
   end
 
   def test_to_sym
@@ -283,11 +285,11 @@ class TestFun < Minitest::Test
   end
 
   def test_diff
-    assert_equal Fun::diff([1, 2, 3, 4], [2, 3]), [1, 4]
-    assert_equal Fun::diff([1, 3], [2, 4, 5, 6]), [2, 4, 5, 6]
-    assert_equal Fun::diff({ a: 1, b: 2, c: 3 }, { a: 1 }), { b: 2, c: 3 }
-    assert_equal Fun::diff({ a: 1 }, { a: 2 }), { a: 2 }
-    assert_equal Fun::diff({ a: 1, b: 2, c: 3, d: 4 }, { e: 5 }), { a: 1, b: 2, c: 3, d: 4 }
+    assert_equal [1, 4], Fun::diff([1, 2, 3, 4], [2, 3])
+    assert_equal [2, 4, 5, 6], Fun::diff([1, 3], [2, 4, 5, 6])
+    assert_equal({ b: 2, c: 3 }, Fun::diff({ a: 1, b: 2, c: 3 }, { a: 1 }))
+    assert_equal({ a: 2 }, Fun::diff({ a: 1 }, { a: 2 }))
+    assert_equal({ a: 1, b: 2, c: 3, d: 4 }, Fun::diff({ a: 1, b: 2, c: 3, d: 4 }, { e: 5 }))
   end
 
   def test_intersect
@@ -299,11 +301,19 @@ class TestFun < Minitest::Test
   end
 
   def test_non_intersect
-    #TODO
+    assert_equal [1, 4], Fun::non_intersect([1, 2, 3, 4], [2, 3])
+    assert_equal [1, 3, 2, 4, 5, 6], Fun::non_intersect([1, 3], [2, 4, 5, 6])
+    assert_equal({ b: 2, c: 3 }, Fun::non_intersect({ a: 1, b: 2, c: 3 }, { a: 1 }))
+    assert_equal({ a: 2 }, Fun::non_intersect({ a: 1 }, { a: 2 }))
+    assert_equal({ a: 1, b: 2, c: 3, d: 4, e: 5 }, Fun::non_intersect({ a: 1, b: 2, c: 3, d: 4 }, { e: 5 }))
   end
 
   def test_union
-    #TODO
+    assert_equal [1, 2, 3, 4], Fun::union([1, 2, 3, 4], [2, 3])
+    assert_equal [1, 3, 2, 4, 5, 6], Fun::union([1, 3], [2, 4, 5, 6])
+    assert_equal({ a: 1, b: 2, c: 3 }, Fun::union({ a: 1, b: 2, c: 3 }, { a: 1 }))
+    assert_equal({ a: 2 }, Fun::union({ a: 1 }, { a: 2 }))
+    assert_equal({ a: 1, b: 2, c: 3, d: 4, e: 5 }, Fun::union({ a: 1, b: 2, c: 3, d: 4 }, { e: 5 }))
   end
 
   def test_empty
@@ -328,7 +338,12 @@ class TestFun < Minitest::Test
   end
 
   def test_memorize_with
-    # todo
+    obj = { a: { b: 2 } }
+    fn = Fun::memorize_with(->(_) { 'test' }) { |d| d[:a][:b] }
+    assert_equal(2, fn.(obj))
+    obj[:a][:b] = 3
+    assert_equal(2, fn.(obj))
+
   end
 
   def test_negate

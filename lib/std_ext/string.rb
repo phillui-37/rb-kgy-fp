@@ -1,13 +1,17 @@
 class String
   def head
-    first
+    self[0]
   end
 
   def tail
-    last(length - 1)
+    self[1...length] || ""
   end
 
   def init
-    first(length - 1)
+    length == 0 ? "" : self[0...(length - 1)]
+  end
+
+  def last
+    self[length - 1]
   end
 end

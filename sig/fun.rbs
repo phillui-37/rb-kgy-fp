@@ -45,8 +45,10 @@ module Fun
   def self.flip: [T, U, R](U, T, ^(T, U) -> R) -> R
 
   def self.all?: [T](T, *^(T) -> bool) -> bool
+    | [T](^(T) -> bool, *T) -> bool
 
   def self.any?: [T](T, *^(T) -> bool) -> bool
+    | [T](^(T) -> bool, *T) -> bool
 
   def self.clamp: [T < Comparable](T, T, T) -> T
 
