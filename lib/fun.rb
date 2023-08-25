@@ -48,23 +48,19 @@ module Fun
   end
 
   def self.pipe(arg, *fns)
-    fns.reduce(arg) { |acc, fn| fn.(acc) }
+    fns.reduce arg { |acc, fn| fn.(acc) }
   end
 
   def self.compose(arg, *fns)
-    fns.reverse.reduce(arg) { |acc, fn| fn.(acc) }
+    fns.reverse.reduce arg { |acc, fn| fn.(acc) }
   end
 
-  def self.not?(fn, *args)
-    !fn.(*args)
+  def self.not?(fn, *args, **kwargs)
+    !fn.(*args, **kwargs)
   end
 
   def self.nil_or(value, fallback)
-    if value.nil?
-      fallback
-    else
-      value
-    end
+    value.nil? ? fallback : value
   end
 
   def self.nil_or_else(value, &get_fallback)
@@ -92,11 +88,7 @@ module Fun
   end
 
   def self.not_nil_map(value, &mapper)
-    if value.nil?
-      value
-    else
-      mapper.(value)
-    end
+    value.nil? ? value : mapper.(value)
   end
 
   def self.add(a, b)

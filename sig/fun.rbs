@@ -19,15 +19,15 @@ module Fun
 
   def self.compose: [T, R](T, *^(untyped) -> untyped) -> R
 
-  def self.not?: (^(*untyped) -> untyped, *untyped) -> bool
+  def self.not?: (^(*untyped, **untyped) -> bool, *untyped, **untyped) -> bool
 
-  def self.nil_or: [T](optional[T], T) -> T
+  def self.nil_or: [T](T?, T) -> T
 
-  def self.nil_or_else: [T](optional[T], ^-> T) -> T
+  def self.nil_or_else: [T](T?, ^-> T) -> T
 
-  def self.not_nil_or: [T](optional[T], T) -> T
+  def self.not_nil_or: [T](T?, T) -> T
 
-  def self.not_nil_or_else: [T](optional[T], ^-> T) -> T
+  def self.not_nil_or_else: [T](T?, ^-> T) -> T
 
   def self.not_nil_map: [T](nil, ^(T) -> untyped) -> nil
     | [T, R](T, ^(T) -> R) -> R

@@ -1,0 +1,13 @@
+module Special
+  class PlaceHolder
+    include Singleton
+  end
+
+  PH: PlaceHolder
+
+  class Optional
+    include Singleton
+  end
+
+  OPT: Optional
+end

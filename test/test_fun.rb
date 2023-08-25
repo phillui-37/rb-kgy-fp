@@ -1,7 +1,7 @@
 require 'lib/fun'
 require 'minitest/test'
 
-class TestFun < Minitest::Test
+class FunTest < Minitest::Test
   def test_eq?
     assert Fun::eq?(1, 1)
     assert Fun::eq?("a", "a")
