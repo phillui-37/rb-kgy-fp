@@ -48,11 +48,11 @@ module Fun
   end
 
   def self.pipe(arg, *fns)
-    fns.reduce arg { |acc, fn| fn.(acc) }
+    fns.reduce(arg) { |acc, fn| fn.(acc) }
   end
 
   def self.compose(arg, *fns)
-    fns.reverse.reduce arg { |acc, fn| fn.(acc) }
+    fns.reverse.reduce(arg) { |acc, fn| fn.(acc) }
   end
 
   def self.not?(fn, *args, **kwargs)
@@ -368,5 +368,9 @@ module Fun
 
   def self.negate n
     -n
+  end
+
+  def self.xor? a, b
+    (a && !b) || (!a && b)
   end
 end

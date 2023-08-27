@@ -60,11 +60,11 @@ module Fun
 
   def self.inc: (Numeric) -> Numeric
 
-  def self.desc: [T < Comparable](Array[T], ^(T) -> Comparable) -> Array[T]
-    | [T < Comparable](Hash[Symbol, T], ^(Symbol, T) -> Comparable) -> Hash[Symbol, T]
+  def self.desc: [T < Comparable](Array[T]){(T) -> Comparable} -> Array[T]
+    | [T < Comparable](Hash[Symbol, T]){(Symbol, T) -> Comparable} -> Hash[Symbol, T]
 
-  def self.asc: [T < Comparable](Array[T], ^(T) -> Comparable) -> Array[T]
-    | [T < Comparable](Hash[Symbol, T], ^(Symbol, T) -> Comparable) -> Hash[Symbol, T]
+  def self.asc: [T < Comparable](Array[T]){(T) -> Comparable} -> Array[T]
+    | [T < Comparable](Hash[Symbol, T]){(Symbol, T) -> Comparable} -> Hash[Symbol, T]
 
   def self.to_sym: (String) -> Symbol
 
