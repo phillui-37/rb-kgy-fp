@@ -289,7 +289,7 @@ module Fun
       arr1.size > arr2.size ? arr1 - arr2 : arr2 - arr1
     }
     if obj1.class != obj2.class
-      throw ArgumentError "obj1 is not same type with obj2"
+      raise ArgumentError.new "obj1 is not same type with obj2"
     elsif obj1.class == Hash
       diff = get_diff.(obj1.to_a, obj2.to_a)
       Hash[*diff.flatten]
@@ -303,7 +303,7 @@ module Fun
       arr1.size > arr2.size ? arr1 - (arr1 - arr2) : arr2 - (arr2 - arr1)
     }
     if obj1.class != obj2.class
-      throw ArgumentError "obj1 is not same type with obj2"
+      raise ArgumentError.new "obj1 is not same type with obj2"
     elsif obj1.class == Hash
       inte = get_inte.(obj1.to_a, obj2.to_a)
       Hash[*inte.flatten]
@@ -314,7 +314,7 @@ module Fun
 
   def self.non_intersect(obj1, obj2)
     if obj1.class != obj2.class
-      throw ArgumentError "obj1 is not same type with obj2"
+      raise ArgumentError.new "obj1 is not same type with obj2"
     elsif obj1.class == Hash
       left = obj1.to_a - obj2.to_a
       right = obj2.to_a - obj1.to_a
@@ -328,7 +328,7 @@ module Fun
 
   def self.union(obj1, obj2)
     if obj1.class != obj2.class
-      throw ArgumentError "obj1 is not same type with obj2"
+      raise ArgumentError.new "obj1 is not same type with obj2"
     elsif obj1.class == Hash
       obj1.merge(obj2)
     else

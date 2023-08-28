@@ -28,7 +28,7 @@ module CurryFun
 
   def self.compose: [R](*^(untyped) -> untyped) -> ^(untyped) -> R
 
-  def self.not?: [R](^(*untyped, **untyped) -> R) -> ^(*untyped, **untyped) -> R
+  def self.not?: [R]{ (*untyped, **untyped) -> R } -> ^(*untyped, **untyped) -> R
 
   def self.nil_or: [T](T, T | nil) -> T
     | [T](T, ph?) -> ^(T) -> T
@@ -46,8 +46,8 @@ module CurryFun
     | [T](get_fallback: opt?, value: T | nil) { () -> T } -> T
     | [T](get_fallback: opt?, value: ph?) { () -> T } -> ^(T) -> T
 
-  def self.not_nil_map: [T, R](mapper: ^(T) -> R, value: T | nil) -> (R | nil)
-    | [T, R](mapper: ^(T) -> R, value: ph?) -> ^(T | nil) -> (R | nil)
+  def self.not_nil_map: [T, R](mapper: (^(T) -> R | Symbol), value: T | nil) -> (R | nil)
+    | [T, R](mapper: (^(T) -> R | Symbol), value: ph?) -> ^(T | nil) -> (R | nil)
     | [T, R](mapper: opt?, value: T | nil) { (T) -> R } -> (R | nil)
     | [T, R](mapper: opt?, value: ph?) { (T) -> R } -> ^(T | nil) -> (R | nil)
 
@@ -72,14 +72,14 @@ module CurryFun
     | [T, U, R](U, ph?) { (T, U) -> R } -> ^(T) -> R
     | [T, U, R](U, T) -> ^() { (T, U) -> R } -> R
 
-  def self.all?: [T](fn: ^(T) -> bool, args: Array[T]) -> bool
+  def self.all?: [T](fn: (^(T) -> bool | Symbol), args: Array[T]) -> bool
     | [T](fn: opt?, args: Array[T]) { (T) -> bool } -> bool
-    | [T](fn: ^(T) -> bool, args: ph?) -> ^(*T) -> bool
+    | [T](fn: (^(T) -> bool | Symbol), args: ph?) -> ^(*T) -> bool
     | [T](fn: opt?, args: ph?) { (T) -> bool } -> ^(*T) -> bool
 
-  def self.any?: [T](fn: ^(T) -> bool, args: Array[T]) -> bool
+  def self.any?: [T](fn: (^(T) -> bool | Symbol), args: Array[T]) -> bool
     | [T](fn: opt?, args: Array[T]) { (T) -> bool } -> bool
-    | [T](fn: ^(T) -> bool, args: ph?) -> ^(*T) -> bool
+    | [T](fn: (^(T) -> bool | Symbol), args: ph?) -> ^(*T) -> bool
     | [T](fn: opt?, args: ph?) { (T) -> bool } -> ^(*T) -> bool
 
   def self.and?: (bool, bool) -> bool

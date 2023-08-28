@@ -29,8 +29,8 @@ module Fun
 
   def self.not_nil_or_else: [T](T?, ^-> T) -> T
 
-  def self.not_nil_map: [T](nil, ^(T) -> untyped) -> nil
-    | [T, R](T, ^(T) -> R) -> R
+  def self.not_nil_map: [T](nil) { (T) -> untyped } -> nil
+    | [T, R](T) { (T) -> R } -> R
 
   def self.add: [T](T, T) -> T
 
@@ -42,7 +42,7 @@ module Fun
 
   def self.mod: (Numeric, Numeric) -> Numeric
 
-  def self.flip: [T, U, R](U, T, ^(T, U) -> R) -> R
+  def self.flip: [T, U, R](U, T) { (T, U) -> R } -> R
 
   def self.all?: [T](T, *^(T) -> bool) -> bool
     | [T](^(T) -> bool, *T) -> bool
@@ -60,11 +60,11 @@ module Fun
 
   def self.inc: (Numeric) -> Numeric
 
-  def self.desc: [T < Comparable](Array[T]){(T) -> Comparable} -> Array[T]
-    | [T < Comparable](Hash[Symbol, T]){(Symbol, T) -> Comparable} -> Hash[Symbol, T]
+  def self.desc: [T < Comparable](Array[T]) { (T) -> Comparable } -> Array[T]
+    | [T < Comparable](Hash[Symbol, T]) { (Symbol, T) -> Comparable } -> Hash[Symbol, T]
 
-  def self.asc: [T < Comparable](Array[T]){(T) -> Comparable} -> Array[T]
-    | [T < Comparable](Hash[Symbol, T]){(Symbol, T) -> Comparable} -> Hash[Symbol, T]
+  def self.asc: [T < Comparable](Array[T]) { (T) -> Comparable } -> Array[T]
+    | [T < Comparable](Hash[Symbol, T]) { (Symbol, T) -> Comparable } -> Hash[Symbol, T]
 
   def self.to_sym: (String) -> Symbol
 
@@ -89,7 +89,7 @@ module Fun
 
   def self.median: (*Numeric) -> Numeric
 
-  def self.memorize_with: [R](^(*untyped, **untyped) -> String, ^(*untyped, **untyped) -> R) -> R
+  def self.memorize_with: [R](^(*untyped, **untyped) -> String) { (*untyped, **untyped) -> R } -> R
 
   def self.negate: (Numeric) -> Numeric
 end

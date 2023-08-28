@@ -69,14 +69,14 @@ module CurryFun
   end
 
   def self.pipe(*fns)
-    ->(arg) { fns.reduce arg { |acc, fn| fn.(acc) } }
+    ->(arg) { fns.reduce(arg) { |acc, fn| fn.(acc) } }
   end
 
   def self.compose(*fns)
-    ->(arg) { fns.reverse.reduce arg { |acc, fn| fn.(acc) } }
+    ->(arg) { fns.reverse.reduce(arg) { |acc, fn| fn.(acc) } }
   end
 
-  def self.not? fn
+  def self.not? & fn
     ->(*args, **kwargs) { !fn.(*args, **kwargs) }
   end
 
@@ -90,7 +90,7 @@ module CurryFun
 
   def self.nil_or_else get_fallback: OPT, value: PH, &blk
     if (!blk && get_fallback == OPT) || (blk && get_fallback.class == Proc)
-      throw ArgumentError "Either get_fallback or blk must be provided"
+      raise ArgumentError.new "Either get_fallback or blk must be provided"
     end
     _fn = blk || get_fallback
     if value == PH
@@ -110,21 +110,21 @@ module CurryFun
 
   def self.not_nil_or_else get_fallback: OPT, value: PH, &blk
     if (!blk && get_fallback == OPT) || (blk && get_fallback.class == Proc)
-      throw ArgumentError "Either get_fallback or blk must be provided"
+      raise ArgumentError.new "Either get_fallback or blk must be provided"
     end
     _fn = blk || get_fallback
     if value == PH
-      ->(value) { not_nil_or_else get_fallback: get_fallback, value: value }
+      ->(value) { not_nil_or_else get_fallback: _fn, value: value }
     else
-      value.nil? ? get_fallback.() : value
+      value.nil? ? value : _fn.()
     end
   end
 
   def self.not_nil_map mapper: OPT, value: PH, &blk
-    if (!blk && mapper == OPT) || (blk && mapper.class == Proc)
-      throw ArgumentError "Either mapper or blk must be provided"
+    if (!blk && mapper == OPT) || (blk && (mapper.class == Proc || mapper.class == Symbol))
+      raise ArgumentError.new "Either mapper or blk must be provided"
     end
-    _fn = blk || mapper
+    _fn = blk || (mapper.class == Proc ? mapper : ->(obj) { obj.method(mapper).() })
     if value == PH
       ->(value) { not_nil_map mapper: _fn, value: value }
     else
@@ -174,7 +174,7 @@ module CurryFun
 
   def self.flip a, b = PH, &fn
     if b == PH && !fn
-      ->(b, &fn) { flip(a, b, &fn) }
+      ->(b = PH, &fn) { flip(a, b, &fn) }
     elsif b == PH && fn
       ->(b) { flip(a, b, &fn) }
     elsif b != PH && !fn
@@ -185,10 +185,10 @@ module CurryFun
   end
 
   def self.all? fn: OPT, args: PH, &blk
-    if (fn == OPT && !blk) || (fn.class == Proc && blk)
-      throw ArgumentError("Either fn or blk must be provided")
+    if (fn == OPT && !blk) || ((fn.class == Proc || fn.class == Symbol) && blk)
+      raise ArgumentError.new("Either fn or blk must be provided")
     end
-    _fn = blk || fn
+    _fn = blk || (fn.class == Proc ? fn : ->(obj) { obj.method(fn).() })
     if args == PH
       ->(*args) { all?(fn: _fn, args: args) }
     else
@@ -197,11 +197,11 @@ module CurryFun
   end
 
   def self.any? fn: OPT, args: PH, &blk
-    if (fn == OPT && !blk) || (fn.class == Proc && blk)
-      throw ArgumentError("Either fn or blk must be provided")
+    if (fn == OPT && !blk) || ((fn.class == Proc || fn.class == Symbol) && blk)
+      raise ArgumentError.new("Either fn or blk must be provided")
     end
-    _fn = blk || fn
-    if args == PH &&
+    _fn = blk || (fn.class == Proc ? fn : ->(obj) { obj.method(fn).() })
+    if args == PH
       ->(*args) { any?(fn: _fn, args: args) }
     else
       args.reduce(false) { |result, arg| result || _fn.(arg) }
@@ -234,14 +234,16 @@ module CurryFun
 
   def self.clamp lower, upper = PH, value = PH
     if upper == PH
-      ->(upper, value) { clamp lower, upper, value }
+      ->(upper = PH, value = PH) { clamp lower, upper, value }
     elsif value == PH
       ->(value) { clamp lower, upper, value }
     else
       if lower > value
         lower
+      elsif upper < value
+        upper
       else
-        upper < value ? upper : value
+        value
       end
     end
   end
@@ -285,7 +287,7 @@ module CurryFun
         arr1.size > arr2.size ? arr1 - arr2 : arr2 - arr1
       }
       if obj1.class != obj2.class
-        throw ArgumentError "obj1 is not same type with obj2"
+        raise ArgumentError.new "obj1 is not same type with obj2"
       elsif obj1.class == Hash
         diff = get_diff.(obj1.to_a, obj2.to_a)
         Hash[*diff.flatten]
@@ -303,7 +305,7 @@ module CurryFun
         arr1.size > arr2.size ? arr1 - (arr1 - arr2) : arr2 - (arr2 - arr1)
       }
       if obj1.class != obj2.class
-        throw ArgumentError "obj1 is not same type with obj2"
+        raise ArgumentError.new "obj1 is not same type with obj2"
       elsif obj1.class == Hash
         inte = get_inte.(obj1.to_a, obj2.to_a)
         Hash[*inte.flatten]
@@ -318,7 +320,7 @@ module CurryFun
       ->(obj2) { non_intersect obj1, obj2 }
     else
       if obj1.class != obj2.class
-        throw ArgumentError "obj1 is not same type with obj2"
+        raise ArgumentError.new "obj1 is not same type with obj2"
       elsif obj1.class == Hash
         left = obj1.to_a - obj2.to_a
         right = obj2.to_a - obj1.to_a
@@ -336,7 +338,7 @@ module CurryFun
       ->(obj2) { union obj1, obj2 }
     else
       if obj1.class != obj2.class
-        throw ArgumentError "obj1 is not same type with obj2"
+        raise ArgumentError.new "obj1 is not same type with obj2"
       elsif obj1.class == Hash
         obj1.merge(obj2)
       else
