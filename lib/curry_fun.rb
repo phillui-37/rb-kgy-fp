@@ -247,34 +247,34 @@ module CurryFun
   end
 
   def self.cond cond_mappers
-    -> do |*args, **kwargs|
+    -> (*args, **kwargs) {
       return nil if args.length == 0 && kwargs.size == 0
       cond_mappers.each do |fns|
         fns => [cond, mapper]
         return mapper.(*args, **kwargs) if cond.(*args, **kwargs)
       end
       nil
-    end
+    }
   end
 
   def self.desc(&comparator)
-    -> do |values|
+    -> (values) {
       if values.class == Hash
         Hash[values.sort_by { |k, v| comparator.(k, v) }.reverse]
       elsif values.class == Array
         values.sort_by { |v| comparator.(v) }.reverse
       end
-    end
+    }
   end
 
   def self.asc(&comparator)
-    -> do |values|
+    -> (values) {
       if values.class == Hash
         Hash[values.sort_by { |k, v| comparator.(k, v) }]
       elsif values.class == Array
         values.sort_by { |v| comparator.(v) }
       end
-    end
+    }
   end
 
   def self.diff obj1, obj2 = PH
