@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Fun
   def self.eq?(a, b)
     a == b

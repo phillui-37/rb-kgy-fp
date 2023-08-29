@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class String
   def head
     self[0]
