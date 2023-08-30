@@ -6,7 +6,6 @@ class State
   include Monad
 
   private_class_method :new
-  attr_reader :action
 
   def self.of & action
     new &action
