@@ -11,15 +11,17 @@ class Writer
     new value, stack
   end
 
-  def self.tell stack=[]
+  def self.tell stack = []
     of nil, stack
   end
 
   private
 
-  def initialize value=nil, stack=[]
+  def initialize value = nil, stack = []
     @value = value
     @stack = stack
+    @stack.freeze
+    @stack.each { |item| item.freeze }
   end
 
   public
