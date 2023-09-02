@@ -10,4 +10,10 @@ Gem::Specification.new do |s|
   s.files       = Rake::FileList['lib/**/*.rb'].exclude(*File.read('.gitignore').split)
   s.homepage    = "https://github.com/phillui-37/rb-kgy-fp"
   s.license     = "MIT"
+  s.metadata    = {
+    bug_tracker_uri: "https://github.com/phillui-37/rb-kgy-fp/issues",
+    change_log_uri: "https://github.com/phillui-37/rb-kgy-fp/CHANGELOG.md",
+    homepage_uri: "https://github.com/phillui-37/rb-kgy-fp",
+    source_code_uri: "https://github.com/phillui-37/rb-kgy-fp",
+  }
 end
