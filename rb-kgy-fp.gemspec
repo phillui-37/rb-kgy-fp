@@ -1,7 +1,7 @@
 require 'rake/file_list'
 
 Gem::Specification.new do |s|
-  s.name        = "RbKgyFp"
+  s.name        = "rb-kgy-fp"
   s.version     = "1.0.0"
   s.summary     = "Ruby FP lib for self usage"
   s.description = "Ruby FP lib for self usage. This lib included simple FP functions like Rmada of JS, and different typeclass support as Haskell"
