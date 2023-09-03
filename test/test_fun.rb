@@ -1,4 +1,4 @@
-require 'lib/fun'
+require 'lib/rb-kgy-fp/fun'
 require 'minitest/test'
 
 class FunTest < Minitest::Test
