@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'lib/special'
-require 'lib/curry_fun'
+require_relative '../special'
+require_relative '../curry_fun'
 
 module Functor
   def fmap &fn

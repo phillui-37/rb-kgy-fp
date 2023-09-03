@@ -1,4 +1,4 @@
-require 'lib/std_ext/string'
+require 'lib/rb-kgy-fp/std_ext/string'
 require 'minitest/test'
 
 class StdExtStringTest < Minitest::Test

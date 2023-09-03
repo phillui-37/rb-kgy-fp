@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'lib/trait/monad'
-require 'lib/fun'
-require 'lib/curry_fun'
+require_relative '../trait/monad'
+require_relative '../fun'
+require_relative '../curry_fun'
 
 class Reader
   include Monad

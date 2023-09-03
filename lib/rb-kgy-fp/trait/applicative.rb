@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require "lib/special"
-require 'lib/fun'
-require 'lib/curry_fun'
-require 'lib/trait/functor'
+require_relative "../special"
+require_relative '../fun'
+require_relative '../curry_fun'
+require_relative '../trait/functor'
 
 module Applicative
   include Functor

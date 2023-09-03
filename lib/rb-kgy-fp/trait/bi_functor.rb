@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'lib/special'
-require 'lib/fun'
+require_relative '../special'
+require_relative '../fun'
 
 module BiFunctor
   # implement require: bimap | (first, second)
