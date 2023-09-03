@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'lib/special'
-require 'lib/curry_fun'
-require 'lib/trait/applicative'
+require_relative '../special'
+require_relative '../curry_fun'
+require_relative '../trait/applicative'
 
 module Monad
   include Applicative

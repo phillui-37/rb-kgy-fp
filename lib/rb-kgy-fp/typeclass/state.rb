@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'lib/trait/monad'
+require_relative '../trait/monad'
 
 class State
   include Monad

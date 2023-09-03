@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'lib/special'
-require 'lib/fun'
-require 'lib/curry_fun'
-require 'lib/trait/semi_group'
-require 'lib/trait/monad'
-require 'lib/trait/bi_functor'
+require_relative '../special'
+require_relative '../fun'
+require_relative '../curry_fun'
+require_relative '../trait/semi_group'
+require_relative '../trait/monad'
+require_relative '../trait/bi_functor'
 
 class Either
   include SemiGroup, Monad, Comparable, BiFunctor
