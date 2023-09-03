@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'lib/special'
+require_relative 'special'
 
 PH = Special::PH
 OPT = Special::OPT

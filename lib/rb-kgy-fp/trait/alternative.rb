@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'lib/special'
-require 'lib/trait/applicative'
+require_relative '../special'
+require_relative '../trait/applicative'
 
 module Alternative
   include Applicative

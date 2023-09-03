@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'lib/special'
-require 'lib/fun'
-require 'lib/curry_fun'
-require 'lib/trait/monad'
-require 'lib/trait/alternative'
+require_relative '../special'
+require_relative '../fun'
+require_relative '../curry_fun'
+require_relative '../trait/monad'
+require_relative '../trait/alternative'
 
 class Maybe
   include Monad, Alternative, Comparable

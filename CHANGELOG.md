@@ -1,3 +1,8 @@
+## 1.0.1
+- Publish Date: Sep 3, 2023
+- Content
+  - fix import error due to change of project structure
+
 ## 1.0.0
 - Publish Date: Sep 2, 2023
 - Content

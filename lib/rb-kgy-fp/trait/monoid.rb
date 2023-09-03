@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'lib/special'
-require 'lib/trait/semi_group'
+require_relative '../special'
+require_relative '../trait/semi_group'
 
 module Monoid
   include SemiGroup
