@@ -153,7 +153,7 @@ module Fun
   end
 
   def self.curry(&fn)
-    require "special"
+    require_relative "special"
 
     req = 1 << 0
     opt = 1 << 1

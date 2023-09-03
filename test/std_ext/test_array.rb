@@ -1,4 +1,4 @@
-require 'lib/std_ext/array'
+require 'lib/rb-kgy-fp/std_ext/array'
 require 'minitest/test'
 
 class StdExtListTest < Minitest::Test
