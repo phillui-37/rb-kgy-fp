@@ -16,6 +16,8 @@ class Either
 
   public
 
+  def inspect = to_s
+
   def initialize value
     @value = value
   end
@@ -46,6 +48,7 @@ class Either
 end
 
 class Left < Either
+
   def assoc other
     other
   end

@@ -5,13 +5,12 @@ require_relative '../fun'
 require_relative '../curry_fun'
 require_relative '../trait/monad'
 require_relative '../trait/alternative'
+require 'singleton'
 
 class Maybe
   include Monad, Alternative, Comparable
 
-  private
-
-  public
+  def inspect = to_s
 
   def just?
     raise Special::UNIMPLEMENTED
@@ -36,7 +35,7 @@ class Maybe
   def self.empty
     Nothing.new
   end
-  
+
   def consume(other)
     replace other
   end
@@ -44,6 +43,9 @@ end
 
 class Just < Maybe
   attr_reader :value
+
+  def to_s = "Just(#{@value})"
+
   def initialize value
     @value = value
   end
@@ -83,6 +85,14 @@ class Just < Maybe
 end
 
 class Nothing < Maybe
+  include Singleton
+
+  def to_s = 'Nothing'
+
+  def self.of _ = nil
+    instance
+  end
+
   def just?
     false
   end
