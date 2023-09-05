@@ -45,6 +45,14 @@ class Either
       other.right? ? 1 : @value <=> other.value
     end
   end
+
+  def get
+    throw RuntimeError
+  end
+
+  def get_left
+    throw RuntimeError
+  end
 end
 
 class Left < Either
@@ -70,7 +78,7 @@ class Left < Either
   end
 
   def to_s
-    "Left(#{@value})"
+    "Left(#{@value.to_s})"
   end
 
   def either(map_left, _)
@@ -79,6 +87,10 @@ class Left < Either
 
   def bimap(map_fst, map_snd)
     Left.new map_fst.(@value)
+  end
+
+  def get_left
+    @value
   end
 end
 
@@ -104,7 +116,7 @@ class Right < Either
   end
 
   def to_s
-    "Right(#{@value})"
+    "Right(#{@value.to_s})"
   end
 
   def either(_, map_right)
@@ -113,5 +125,9 @@ class Right < Either
 
   def bimap(map_fst, map_snd)
     of map_snd.(@value)
+  end
+
+  def get
+    @value
   end
 end

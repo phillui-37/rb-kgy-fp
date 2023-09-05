@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = "rb-kgy-fp"
-  s.version = "1.0.1"
+  s.version = "1.0.2"
   s.summary = "Ruby FP lib for self usage"
   s.description = "Ruby FP lib for self usage. This lib included simple FP functions like Rmada of JS, and different typeclass support as Haskell"
   s.authors = "Phil Lui"

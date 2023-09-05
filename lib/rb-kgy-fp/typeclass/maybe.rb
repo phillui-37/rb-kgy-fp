@@ -39,12 +39,16 @@ class Maybe
   def consume(other)
     replace other
   end
+
+  def get
+    throw RuntimeError
+  end
 end
 
 class Just < Maybe
   attr_reader :value
 
-  def to_s = "Just(#{@value})"
+  def to_s = "Just(#{@value.to_s})"
 
   def initialize value
     @value = value
@@ -82,6 +86,9 @@ class Just < Maybe
     fn.(@value)
   end
 
+  def get
+    @value
+  end
 end
 
 class Nothing < Maybe
