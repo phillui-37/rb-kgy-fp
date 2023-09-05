@@ -33,7 +33,7 @@ class Maybe
   end
 
   def self.empty
-    Nothing.new
+    Nothing.instance
   end
 
   def consume(other)
@@ -70,7 +70,7 @@ class Just < Maybe
     if other.just?
       of fn.(@value, other.value)
     else
-      Nothing.new
+      Nothing.instance
     end
   end
 
