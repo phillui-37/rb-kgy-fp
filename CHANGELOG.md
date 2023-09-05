@@ -1,5 +1,10 @@
+## 1.0.3
+- Publish Date: Sep 5, 2023
+- Content
+  - fix Nothing new invocation issue
+
 ## 1.0.2
-- Publish Date: 
+- Publish Date: Sep 5, 2023
 - Content
   - fix either and maybe to_s implementation
   - add unboxing method to maybe and either
