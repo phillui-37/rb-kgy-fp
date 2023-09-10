@@ -47,11 +47,11 @@ class Either
   end
 
   def get
-    throw RuntimeError
+    raise RuntimeError
   end
 
   def get_left
-    throw RuntimeError
+    raise RuntimeError
   end
 end
 

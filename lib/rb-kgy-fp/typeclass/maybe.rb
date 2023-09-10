@@ -41,7 +41,7 @@ class Maybe
   end
 
   def get
-    throw RuntimeError
+    raise RuntimeError
   end
 end
 
